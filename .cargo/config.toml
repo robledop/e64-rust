@@ -1,0 +1,9 @@
+[target.x86_64-unknown-none]
+rustflags = [
+    "-Clink-arg=-Tlinker.ld",
+    "-Cforce-frame-pointers=yes",
+    "-Clink-arg=-zmax-page-size=0x1000",
+    "-Crelocation-model=static",
+    "-Clink-arg=-no-pie",
+    "-Clink-arg=--no-rosegment",
+]
