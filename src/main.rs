@@ -4,7 +4,7 @@
 #[cfg(not(test))]
 use core::panic::PanicInfo;
 
-use font8x8::legacy::BASIC_LEGACY;
+use spleen_font::FONT_8X16;
 use limine::BaseRevision;
 use limine::framebuffer::Framebuffer;
 use limine::request::{
@@ -88,15 +88,22 @@ fn render_text(fb: &Framebuffer<'_>, text: &[u8], start_x: usize, mut y: usize, 
     }
 }
 
+/// PSF1 header: [0x36, 0x04, mode, charsize].
+/// The spleen-8x16.psfu file is PSF1 with charsize=16 (0x10), mode=0x03.
+/// Header is 4 bytes, glyph data starts at offset 4.
+/// Each glyph is `charsize` bytes (one byte per row, 8 pixels wide, MSB-first).
 fn draw_glyph(fb: &Framebuffer<'_>, byte: u8, x: usize, y: usize, fg: u32, bg: u32) {
-    let glyph = BASIC_LEGACY[byte as usize];
+    const PSF1_HEADER_SIZE: usize = 4;
+    let charsize = FONT_8X16[3] as usize; // byte 3 = charsize in PSF1
+    let glyph_offset = PSF1_HEADER_SIZE + (byte as usize) * charsize;
+    let Some(glyph_data) = FONT_8X16.get(glyph_offset..glyph_offset + charsize) else {
+        return;
+    };
 
-    for (row_idx, row_bits) in glyph.iter().enumerate() {
-        let mut mask = 1u8;
+    for (row_idx, &row_bits) in glyph_data.iter().enumerate() {
         for col in 0..FONT_WIDTH {
-            let color = if row_bits & mask != 0 { fg } else { bg };
+            let color = if row_bits & (0x80 >> col) != 0 { fg } else { bg };
             put_pixel(fb, x + col, y + row_idx, color);
-            mask <<= 1;
         }
     }
 }
@@ -173,7 +180,7 @@ fn encode_color(fb: &Framebuffer<'_>, color: Color) -> u32 {
 }
 
 const FONT_WIDTH: usize = 8;
-const FONT_HEIGHT: usize = 8;
+const FONT_HEIGHT: usize = 16;
 
 fn mask(bits: u8) -> u32 {
     if bits == 0 { 0 } else { (1u32 << bits) - 1 }

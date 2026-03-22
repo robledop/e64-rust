@@ -18,15 +18,9 @@ checksum = "812e12b5285cc515a9c72a5c1d3b6d46a19dac5acfef5265968c166106e31dd3"
 name = "e64-rust"
 version = "0.1.0"
 dependencies = [
- "font8x8",
  "limine",
+ "spleen-font",
 ]
-
-[[package]]
-name = "font8x8"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "875488b8711a968268c7cf5d139578713097ca4635a76044e8fe8eedf831d07e"
 
 [[package]]
 name = "limine"
@@ -36,6 +30,12 @@ checksum = "af6d2ee42712e7bd2c787365cd1dab06ef59a61becbf87bec7b32b970bd2594b"
 dependencies = [
  "bitflags",
 ]
+
+[[package]]
+name = "spleen-font"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "43744d8a750592871f6182fd1b9ba6a341d31da3ebf430c9d9d3634d49296600"
 
 [[package]]
 name = "xtask"

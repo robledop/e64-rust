@@ -8,7 +8,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-font8x8 = { version = "0.3", default-features = false }
+spleen-font = { version = "0.2", default-features = false, features = ["s8x16"] }
 limine = "0.5"
 
 [profile.dev]
